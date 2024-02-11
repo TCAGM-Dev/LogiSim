@@ -1,0 +1,97 @@
+:root {
+    --background-offset-x: 0;
+    --background-offset-y: 0;
+    --background-scale: 20px;
+
+    --background-dot-radius: calc(var(--background-scale) / 10);
+
+    --background-color: #ffffff;
+    --background-accent-color: #dddddd;
+
+    --ui-background-color: #eeeeee;
+    --ui-accent-color: #ffffff;
+    --ui-border-color: #222222;
+
+    --ui-margin: 2em;
+    --ui-padding: .5em;
+    --ui-border-radius: .5em;
+
+    --ui-chip-scale: .2em;
+}
+
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#view {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--background-color);
+    background-image: radial-gradient(circle, var(--background-accent-color) var(--background-dot-radius), transparent 0);
+    background-repeat: repeat;
+    background-position: center;
+    background-size: var(--background-scale) var(--background-scale);
+}
+
+#chipselect {
+    margin: var(--ui-margin);
+    padding: var(--ui-padding);
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: calc(100% - var(--ui-margin) * 2);
+
+    background-color: var(--ui-background-color);
+    border-radius: var(--ui-border-radius);
+
+    display: flex;
+    overflow-x: auto;
+}
+
+.chipselectbutton > .deletebutton {
+    display: none;
+
+    
+}
+.chipselectbutton:hover > .deletebutton {
+    display: initial;
+}
+
+#chipaddbutton {
+    font-size: 1.5em;
+}
+
+#chipaddbutton:hover, .chipselectbutton:hover {
+    filter: brightness(1.2);
+}
+
+.chipselectbutton {
+    font-size: 1.5em;
+
+    border: #000 2px solid;
+
+    margin-right: var(--ui-padding);
+}
+
+.chipselectbutton.selected {
+    transform: translateY(-5px);
+}
+
+.chipselectbutton.light {
+    color: black;
+}
+.chipselectbutton.dark {
+    color: white;
+}

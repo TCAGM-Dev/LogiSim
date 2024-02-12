@@ -88,19 +88,21 @@ class Chip {
     #gates
     #inputs
     #outputs
+    #handler
 
-    constructor(name = UNNAMED_CHIP_NAME, inputs = [], outputs = [], gates = [], color) {
+    constructor(name = UNNAMED_CHIP_NAME, inputs = [], outputs = [], gates = [], color, handler) {
         this.name = name
         this.#inputs = inputs
         this.#outputs = outputs
         this.#gates = gates
         this.color = color ?? `#${hexLengthen(Math.floor(Math.random() * 2 ** 8).toString(16), 2) + hexLengthen(Math.floor(Math.random() * 2 ** 8).toString(16), 2) + hexLengthen(Math.floor(Math.random() * 2 ** 8).toString(16), 2)}`
+        this.#handler = handler
 
         Chip.#chips.push(this)
     }
 
     open() {
-        Chip.#currentid = this.id
+        if (!this.#handler) Chip.#currentid = this.id
         return this
     }
 
@@ -136,6 +138,17 @@ class Chip {
         return Chip.#chips[id]
     }
 
+    get handler() {
+        return this.#handler
+    }
+
+    get inputs() {
+        return this.#inputs
+    }
+    get outputs() {
+        return this.#outputs
+    }
+
     renderSelf(x, y) {
 
     }
@@ -156,10 +169,14 @@ function hexToValue(hex) {
 class Gate {
     #chipid
     #position
+    #inputs
+    #outputs
 
-    constructor(id, x = 0, y = 0) {
-        this.#chipid = id
+    constructor(chip, parent, x = 0, y = 0) {
+        this.#chipid = chip.id
         this.#position = new Vector2(x, y)
+        this.#inputs = chip.inputs.map(v => v.clone())
+        this.#outputs = chip.outputs.map(v => v.clone())
     }
 
     get id() {
@@ -170,8 +187,39 @@ class Gate {
         return this.#position
     }
 
+    get chip() {
+        return Chip.get(this.#chipid)
+    }
+
     render() {
         Chip.get(this.#chipid).renderSelf(this.#position.x, this.#position.y)
+    }
+
+    update() {
+        this.chip.handler(this.inputs, this.outputs)
+    }
+}
+
+class Pin {
+    #active
+
+    constructor(name) {
+        this.name = name
+        this.#active = false
+    }
+
+    active() {
+        return this.#active
+    }
+    set(bool) {
+        if (this.#active != bool) {
+            this.#active = bool
+            this.#next.forEach(v => v.update())
+        }
+    }
+
+    clone() {
+        return new Pin(this.name)
     }
 }
 
@@ -255,6 +303,10 @@ function init() {
     registerEvents()
 
     new Chip(MAIN_CHIP_NAME).setColor("var(--ui-accent-color)").open()
+    new Gate(new Chip("OR", [new Pin(), new Pin()], [new Pin()], [], "#ff0000", (inputs, outputs) => {
+        outputs[0].set(inputs[0].active() || inputs[1].active())
+    }), Chip.getCurrent())
+    
 
     updateUI()
 

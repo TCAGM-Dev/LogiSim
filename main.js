@@ -202,6 +202,7 @@ class Gate {
 
 class Pin {
     #active
+    #next = []
 
     constructor(name) {
         this.name = name

@@ -101,6 +101,10 @@ class Chip {
         Chip.#chips.push(this)
     }
 
+    addGate(gate) {
+        this.#gates.push(gate)
+    }
+
     open() {
         if (!this.#handler) Chip.#currentid = this.id
         return this
@@ -177,6 +181,8 @@ class Gate {
         this.#position = new Vector2(x, y)
         this.#inputs = chip.inputs.map(v => v.clone())
         this.#outputs = chip.outputs.map(v => v.clone())
+
+        if (parent) parent.addGate(this)
     }
 
     get id() {

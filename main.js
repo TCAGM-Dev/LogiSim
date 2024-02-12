@@ -107,7 +107,7 @@ class Chip {
     }
 
     delete() {
-        if (this.name == MAIN_CHIP_NAME) return
+        if (this.name == MAIN_CHIP_NAME || this.#handler) return
         if (this.id == Chip.#currentid) Chip.#currentid--
         Chip.#chips.splice(this.id, 1)
     }

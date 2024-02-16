@@ -74,6 +74,15 @@ class Vector2 {
     }
 }
 
+class GateElement extends HTMLElement {
+    constructor() {
+        super()
+
+        this.style.backgroundColor = "#ff0000"
+    }
+}
+customElements.define("gate", GateElement, {extends: "div"})
+
 function hexLengthen(hex, amount) {
     while (hex.length < amount) {
         hex = "0" + hex
@@ -153,8 +162,11 @@ class Chip {
         return this.#outputs
     }
 
-    renderSelf(x, y) {
-
+    renderSelf(gate) {
+        const position = gate.position
+        if (!gate.getElement()) gate.createElement()
+        const element = gate.getElement()
+        
     }
 
     render() {
@@ -175,6 +187,7 @@ class Gate {
     #position
     #inputs
     #outputs
+    #element
 
     constructor(chip, parent, x = 0, y = 0) {
         this.#chipid = chip.id
@@ -197,8 +210,24 @@ class Gate {
         return Chip.get(this.#chipid)
     }
 
+    getElement() {
+        return this.#element
+    }
+    createElement() {
+        const chipname = this.chip.name
+        const inputs = this.#inputs
+        const outputs = this.#outputs
+
+        const height = 0
+
+        const element = document.createElement("gate")
+        
+        this.#element = element
+        return element
+    }
+
     render() {
-        Chip.get(this.#chipid).renderSelf(this.#position.x, this.#position.y)
+        Chip.get(this.#chipid).renderSelf(this)
     }
 
     update() {
